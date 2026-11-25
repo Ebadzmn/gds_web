@@ -9,6 +9,13 @@ export function LenisProvider({ children }: { children: ReactNode }) {
   const prefersReduced = usePrefersReducedMotion();
 
   useEffect(() => {
+    if (!window.location.hash) {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
+
     if (prefersReduced) return;
 
     const lenis = new Lenis({
@@ -17,6 +24,10 @@ export function LenisProvider({ children }: { children: ReactNode }) {
       wheelMultiplier: 0.92,
       touchMultiplier: 1.5,
     });
+
+    if (!window.location.hash) {
+      lenis.scrollTo(0, { immediate: true });
+    }
 
     lenis.on("scroll", ScrollTrigger.update);
 
